@@ -8,42 +8,36 @@ class VigenereCipheringMachine {
 
   encrypt(message, key) {
     if (message === undefined || key === undefined) { throw new Error; }
-    let text = message.toUpperCase().split('').filter(item => /^[A-Z]/.test(item));
-    let textFull = message.split('');
-    let textToNum = text.map(item => +item.replace(item, this.alphabet.indexOf(item)));
-    let keyword = key.toUpperCase().repeat(Math.ceil(text.length/key.length)).slice(0,text.length).split('');
-    let keywordToNum = keyword.map(item => +item.replace(item, this.alphabet.indexOf(item)));
-    let cryptText = textToNum.map((item, index) => this.alphabet[(item + keywordToNum[index]) % this.alphabet.length]);
-    let result = [];
-    for (let i = 0, j = 0; i < textFull.length; i++, j++) {
-      if (/^[A-Za-z]/.test(textFull[i])) {
-        result.push(cryptText[j]);
+    let text = message.toUpperCase().split('');
+    let keyword = key.toUpperCase().split('');
+    let encryptText = [];
+    for (let i = 0, j = 0; i < text.length; i++) {
+      if (j > keyword.length-1) { j = 0; }
+      if (/^[A-Za-z]/.test(text[i])) {
+        encryptText.push(this.alphabet[(this.alphabet.indexOf(text[i]) + this.alphabet.indexOf(keyword[j])) % this.alphabet.length]);
+        j++;
       } else {
-        result.push(textFull[i]);
-        j--;
+        encryptText.push(text[i]);
       }
     }
-    return this.reverseMachine ? result.reverse().join('') : result.join('');
+    return this.reverseMachine ? encryptText.reverse().join('') : encryptText.join('');
   }
-
+ 
   decrypt(message, key) {
-    if (message === undefined || key === undefined) { throw new Error; }
-     let text = message.toUpperCase().split('').filter(item => /^[A-Z]/.test(item));
-    let textFull = message.split('');
-    let textToNum = text.map(item => +item.replace(item, this.alphabet.indexOf(item)));
-    let keyword = key.toUpperCase().repeat(Math.ceil(text.length/key.length)).slice(0,text.length).split('');
-    let keywordToNum = keyword.map(item => +item.replace(item, this.alphabet.indexOf(item)));
-    let decryptText = textToNum.map((item, index) => (item - keywordToNum[index]) >= 0 ? this.alphabet[(item - keywordToNum[index])] : this.alphabet[(item - keywordToNum[index]) + this.alphabet.length]);
-    let result = [];
-    for (let i = 0, j = 0; i < textFull.length; i++, j++) {
-      if (/^[A-Z]/.test(textFull[i])) {
-        result.push(decryptText[j]);
+    if (message === undefined || key === undefined	) { throw new Error; }
+    let text = message.toUpperCase().split('');
+    let keyword = key.toUpperCase().split('');
+    let decryptText = [];
+    for (let i = 0, j = 0; i < text.length; i++) {
+      if (j > keyword.length-1) { j = 0; }
+      if (/^[A-Za-z]/.test(text[i])) {
+        decryptText.push(this.alphabet[(this.alphabet.indexOf(text[i]) - this.alphabet.indexOf(keyword[j])) >= 0 ? (this.alphabet.indexOf(text[i]) - this.alphabet.indexOf(keyword[j])) : (this.alphabet.indexOf(text[i]) - this.alphabet.indexOf(keyword[j])) + this.alphabet.length]);
+        j++;
       } else {
-        result.push(textFull[i]);
-        j--;
+        decryptText.push(text[i]);
       }
     }
-    return this.reverseMachine ? result.reverse().join('') : result.join('');
+    return this.reverseMachine ? decryptText.reverse().join('') : decryptText.join('');
   }
 }
 
