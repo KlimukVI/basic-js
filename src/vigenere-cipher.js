@@ -13,7 +13,7 @@ class VigenereCipheringMachine {
     let encryptText = [];
     for (let i = 0, j = 0; i < text.length; i++) {
       if (j > keyword.length-1) { j = 0; }
-      if (/^[A-Za-z]/.test(text[i])) {
+      if (this.alphabet.indexOf(text[i]) !== -1) {
         encryptText.push(this.alphabet[(this.alphabet.indexOf(text[i]) + this.alphabet.indexOf(keyword[j])) % this.alphabet.length]);
         j++;
       } else {
@@ -30,7 +30,7 @@ class VigenereCipheringMachine {
     let decryptText = [];
     for (let i = 0, j = 0; i < text.length; i++) {
       if (j > keyword.length-1) { j = 0; }
-      if (/^[A-Za-z]/.test(text[i])) {
+      if (this.alphabet.indexOf(text[i]) !== -1) {
         decryptText.push(this.alphabet[(this.alphabet.indexOf(text[i]) - this.alphabet.indexOf(keyword[j]) + this.alphabet.length) % this.alphabet.length]);
         j++;
       } else {
